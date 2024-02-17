@@ -30,7 +30,7 @@ namespace Application.Repository
 
         public async Task<Stock?> DeleteStockAsync(int id)
         {
-            var stockModel= await _dbContext.Stock.FirstOrDefaultAsync(x => x.Id == id);
+            var stockModel = await _dbContext.Stock.FirstOrDefaultAsync(x => x.Id == id);
             if (stockModel == null)
             {
                 return null;
@@ -50,15 +50,26 @@ namespace Application.Repository
                 stocks = stocks.Where(s => s.Symbol.Contains(query.Symbol));
             }
 
-            if(!string.IsNullOrWhiteSpace(query.CompanyName))
+            if (!string.IsNullOrWhiteSpace(query.CompanyName))
             {
                 stocks = stocks.Where(s => s.CompanyName.Contains(query.CompanyName));
             }
 
+            if (!string.IsNullOrWhiteSpace(query.SortBy))
+            {
+                if (query.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase))
+                {
+                    stocks = query.IsDesc ? stocks.OrderByDescending(s => s.Symbol) : stocks.OrderBy(s => s.Symbol);
+                }
+                else if (query.SortBy.Equals("CompanyName", StringComparison.OrdinalIgnoreCase))
+                {
+                    stocks = query.IsDesc ? stocks.OrderByDescending(s => s.CompanyName) : stocks.OrderBy(s => s.CompanyName);
+                }
+            }
             // Here when we are going to execute the queery
             return await stocks.ToListAsync();
         }
-    
+
 
         public async Task<Stock?> GetStockByIdAsync(int id)
         {
