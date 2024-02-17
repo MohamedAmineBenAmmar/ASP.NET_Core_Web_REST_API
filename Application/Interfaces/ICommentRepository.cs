@@ -12,5 +12,6 @@ namespace Application.Interfaces
         Task<Comment?> GetCommentByIdAsync(int id);
         Task<Comment> CreateCommentAsync(Comment commentModel);
         Task<Comment?> DeleteCommentByIdAsync(int id);
+        Task<Comment?> UpdateCommentAsync(int id, Comment commentModel);
     }
 }

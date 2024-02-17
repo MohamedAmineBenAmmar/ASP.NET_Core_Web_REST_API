@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Data;
 using Application.DTOs.Stock;
+using Application.Helpers;
 using Application.Interfaces;
 using Application.Models;
 using Microsoft.EntityFrameworkCore;
@@ -40,10 +41,24 @@ namespace Application.Repository
             return stockModel;
         }
 
-        public async Task<List<Stock>> GetAllStocksAsync()
+        public async Task<List<Stock>> GetAllStocksAsync(QueryObject query)
         {
-            return await _dbContext.Stock.Include(c => c.Comments).ToListAsync();
+            var stocks = _dbContext.Stock.Include(c => c.Comments).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Symbol))
+            {
+                stocks = stocks.Where(s => s.Symbol.Contains(query.Symbol));
+            }
+
+            if(!string.IsNullOrWhiteSpace(query.CompanyName))
+            {
+                stocks = stocks.Where(s => s.CompanyName.Contains(query.CompanyName));
+            }
+
+            // Here when we are going to execute the queery
+            return await stocks.ToListAsync();
         }
+    
 
         public async Task<Stock?> GetStockByIdAsync(int id)
         {

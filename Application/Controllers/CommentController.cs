@@ -71,7 +71,7 @@ namespace Application.Controllers
 
             var commentModel = commentDTO.ToCommentFromCreate(stockId);
             await _commentRepository.CreateCommentAsync(commentModel);
-            return CreatedAtAction(nameof(GetById), new { id = commentModel }, commentModel.ToCommentDTO());
+            return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDTO());
         }
 
         [HttpDelete("{id:int}")]
@@ -89,6 +89,19 @@ namespace Application.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<IActionResult> UpdateComment([FromRoute] int id, [FromBody] UpdateCommentRequestDTO commentDTO)
+        {
+            var comment = await _commentRepository.UpdateCommentAsync(id, commentDTO.ToCommentFromUpdate());
+            if (comment == null)
+            {
+                return NotFound("Comment does not exist");
+            }
+
+            return Ok(comment.ToCommentDTO());
         }
     }
 }

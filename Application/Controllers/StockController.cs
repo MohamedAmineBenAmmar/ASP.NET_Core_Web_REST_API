@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Data;
 using Application.DTOs.Stock;
+using Application.Helpers;
 using Application.Interfaces;
 using Application.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace Application.Controllers
 
         // The creation of our endpoints
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
             if (!ModelState.IsValid)
             {
@@ -33,7 +34,7 @@ namespace Application.Controllers
             }
             // We need to call ToList to execute the query
             // Check the differed execution behaviour
-            var stocks = await _stockRepo.GetAllStocksAsync();
+            var stocks = await _stockRepo.GetAllStocksAsync(query);
 
             // The Select method is the .NET of the JS map function
             var stocksDTO = stocks.Select(s => s.ToStockDTO());

@@ -55,5 +55,23 @@ namespace Application.Repository
 
             return comment;
         }
+
+        public async Task<Comment?> UpdateCommentAsync(int id, Comment commentModel)
+        {
+            var existingComment = await _dbcontext.Comments.FindAsync(id);
+            if (existingComment == null)
+            {
+                return null;
+            }
+
+            // The entity framework will start to track the changes now
+            existingComment.Title = commentModel.Title;
+            existingComment.Content = commentModel.Content;    
+
+            await _dbcontext.SaveChangesAsync();        
+
+            return existingComment;
+        }
+
     }
 }
