@@ -1,4 +1,6 @@
 using Application.Data;
+using Application.Interfaces;
+using Application.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +18,9 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     // The operation that we did is going to seach in the appsettings.json file for a connection string with the name "DefaultConnection"
 });
+
+// Write up our repository
+builder.Services.AddScoped<IStockRepository, StockRepository>();
 
 // ------------------
 var app = builder.Build();
