@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.DTOs.Comment;
 
 namespace Application.DTOs.Stock
 {
@@ -19,6 +20,7 @@ namespace Application.DTOs.Stock
 
         // In the Stock model the comments definition used to be here
         // but now we are not going to include it in the DTO
+        public List<CommentDTO> Comments { get; set;}
 
     }
 }

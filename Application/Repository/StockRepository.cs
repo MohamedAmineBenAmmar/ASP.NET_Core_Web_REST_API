@@ -42,12 +42,18 @@ namespace Application.Repository
 
         public async Task<List<Stock>> GetAllStocksAsync()
         {
-            return await _dbContext.Stock.ToListAsync();
+            return await _dbContext.Stock.Include(c => c.Comments).ToListAsync();
         }
 
         public async Task<Stock?> GetStockByIdAsync(int id)
         {
-            return await _dbContext.Stock.FindAsync(id);
+            return await _dbContext.Stock.Include(c => c.Comments).FirstOrDefaultAsync(i => i.Id == id);
+        }
+
+        public async Task<bool> StockExistsAsync(int id)
+        {
+            var stockModel = await _dbContext.Stock.FirstOrDefaultAsync(stock => stock.Id == id);
+            return stockModel != null;
         }
 
         public async Task<Stock?> UpdateStockAsync(int id, UpdateStockRequestDTO stockDTO)

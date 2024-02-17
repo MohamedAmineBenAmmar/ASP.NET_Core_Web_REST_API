@@ -19,6 +19,13 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
     // The operation that we did is going to seach in the appsettings.json file for a connection string with the name "DefaultConnection"
 });
 
+// Add the JSON serializer to ignore the reference loop handling
+// Prevents object cycles from being serialized
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+});
+
 // Write up our repository
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
