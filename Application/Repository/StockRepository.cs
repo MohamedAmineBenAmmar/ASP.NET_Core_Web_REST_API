@@ -45,16 +45,19 @@ namespace Application.Repository
         {
             var stocks = _dbContext.Stock.Include(c => c.Comments).AsQueryable();
 
+            // Example of filtering by Symbol 
             if (!string.IsNullOrWhiteSpace(query.Symbol))
             {
                 stocks = stocks.Where(s => s.Symbol.Contains(query.Symbol));
             }
 
+            // Example of filtering by CompanyName
             if (!string.IsNullOrWhiteSpace(query.CompanyName))
             {
                 stocks = stocks.Where(s => s.CompanyName.Contains(query.CompanyName));
             }
-
+            
+            // Example of sorting
             if (!string.IsNullOrWhiteSpace(query.SortBy))
             {
                 if (query.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase))
@@ -66,6 +69,11 @@ namespace Application.Repository
                     stocks = query.IsDesc ? stocks.OrderByDescending(s => s.CompanyName) : stocks.OrderBy(s => s.CompanyName);
                 }
             }
+
+            // Example of pagination
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+            stocks = stocks.Skip(skipNumber).Take(query.PageSize);
+            
             // Here when we are going to execute the queery
             return await stocks.ToListAsync();
         }
