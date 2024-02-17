@@ -25,14 +25,28 @@ namespace Application.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllComments()
         {
+            // Telling the controller to perform the data validation that we specified
+            // in the DTO class
+            // This is a common pattern to perform model validation
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var comments = await _commentRepository.GetAllCommentsAsync();
             var commentsDTOs = comments.Select(comment => comment.ToCommentDTO());
             return Ok(commentsDTOs);
         }
 
-        [HttpGet("{id}")]
+        // Example of URL constraint
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var comment = await _commentRepository.GetCommentByIdAsync(id);
             if (comment == null)
             {
@@ -42,9 +56,14 @@ namespace Application.Controllers
             return Ok(comment.ToCommentDTO());
         }
 
-        [HttpPost("{stockId}")]
+        [HttpPost("{stockId:int}")]
         public async Task<IActionResult> CreateComment([FromRoute] int stockId, CreateCommentDTO commentDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (!await _stockRepository.StockExistsAsync(stockId))
             {
                 return BadRequest("Stock does not exist");
@@ -55,16 +74,21 @@ namespace Application.Controllers
             return CreatedAtAction(nameof(GetById), new { id = commentModel }, commentModel.ToCommentDTO());
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteComment([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
             var comment = await _commentRepository.DeleteCommentByIdAsync(id);
             if (comment == null)
             {
                 return NotFound("Comment does not exist");
             }
 
-            return NoContent(); 
+            return NoContent();
         }
     }
 }

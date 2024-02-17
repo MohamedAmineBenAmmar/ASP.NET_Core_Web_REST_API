@@ -13,7 +13,7 @@ namespace Application.Controllers
 {
     [Route("api/stock")]
     [ApiController]
-    public class StockController: ControllerBase
+    public class StockController : ControllerBase
     {
         // The creation of an attribute that is immutable        
         private readonly IStockRepository _stockRepo;
@@ -27,19 +27,27 @@ namespace Application.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             // We need to call ToList to execute the query
             // Check the differed execution behaviour
             var stocks = await _stockRepo.GetAllStocksAsync();
-            
+
             // The Select method is the .NET of the JS map function
             var stocksDTO = stocks.Select(s => s.ToStockDTO());
-            
+
             return Ok(stocksDTO);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var stock = await _stockRepo.GetStockByIdAsync(id);
             if (stock == null)
             {
@@ -52,17 +60,26 @@ namespace Application.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStockRequestDTO stockDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var stockModel = stockDTO.ToStockFromCreateDTO();
             await _stockRepo.CreateStockAsync(stockModel);
             return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDTO());
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDTO updateStockDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var stockModel = await _stockRepo.UpdateStockAsync(id, updateStockDTO);
-            if (stockModel == null){
+            if (stockModel == null)
+            {
                 return NotFound();
             }
 
@@ -70,16 +87,21 @@ namespace Application.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var stockModel = await _stockRepo.DeleteStockAsync(id);
-            if (stockModel == null){
+            if (stockModel == null)
+            {
                 return NotFound();
             }
-  
+
             return NoContent();
         }
-       
+
     }
 }

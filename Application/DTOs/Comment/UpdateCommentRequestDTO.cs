@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Comment
 {
-    public class CreateCommentDTO
+    public class UpdateCommentRequestDTO
     {
         [Required]
         [MinLength(5, ErrorMessage = "Title must be at least 5 characters long")]
