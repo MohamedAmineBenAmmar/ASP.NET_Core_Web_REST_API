@@ -43,7 +43,12 @@ namespace Application.Repository
 
         public async Task<List<Stock>> GetAllStocksAsync(QueryObject query)
         {
-            var stocks = _dbContext.Stock.Include(c => c.Comments).AsQueryable();
+            // Explination of the `ThenInclude`
+            // Note: The stock model is linked by one to many relationship with the comment and the comment is linked with
+            // one to one with the comment. When we hit the stock endpoint we want to visualize the nested user 
+            // in the comment in the stock endpoint response. To do so we use 
+            // `var stocks = _dbContext.Stock.Include(c => c.Comments).ThenInclude(a => a.AppUser).AsQueryable();`
+            var stocks = _dbContext.Stock.Include(c => c.Comments).ThenInclude(a => a.AppUser).AsQueryable();
 
             // Example of filtering by Symbol 
             if (!string.IsNullOrWhiteSpace(query.Symbol))

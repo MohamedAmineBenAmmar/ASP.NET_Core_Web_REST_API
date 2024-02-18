@@ -41,13 +41,17 @@ namespace Application.Repository
 
         public async Task<List<Comment>> GetAllCommentsAsync()
         {
-            var stocks = await _dbcontext.Comments.ToListAsync();
+            // We did Include(c => c.AppUser) to include the AppUser navigation property othetrwise it will be null
+            // because of the differed execution of the entity framework
+            var stocks = await _dbcontext.Comments.Include(c => c.AppUser).ToListAsync();
             return stocks;
         }
 
         public async Task<Comment?> GetCommentByIdAsync(int id)
         {
-            var comment = await _dbcontext.Comments.FirstOrDefaultAsync(comment => comment.Id == id);
+            // We did Include(c => c.AppUser) to include the AppUser navigation property othetrwise it will be null
+            // because of the differed execution of the entity framework
+            var comment = await _dbcontext.Comments.Include(c => c.AppUser).FirstOrDefaultAsync(comment => comment.Id == id);
             if (comment == null)
             {
                 return null;
@@ -66,9 +70,9 @@ namespace Application.Repository
 
             // The entity framework will start to track the changes now
             existingComment.Title = commentModel.Title;
-            existingComment.Content = commentModel.Content;    
+            existingComment.Content = commentModel.Content;
 
-            await _dbcontext.SaveChangesAsync();        
+            await _dbcontext.SaveChangesAsync();
 
             return existingComment;
         }

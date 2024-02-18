@@ -39,7 +39,7 @@ namespace Application.Controllers
             var stocks = await _stockRepo.GetAllStocksAsync(query);
 
             // The Select method is the .NET of the JS map function
-            var stocksDTO = stocks.Select(s => s.ToStockDTO());
+            var stocksDTO = stocks.Select(s => s.ToStockDTO()).ToList();
 
             return Ok(stocksDTO);
         }
