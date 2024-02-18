@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Application.Models
-{
+{   
+    [Table("Comments")]
     public class Comment
     {
         public int Id { get; set; }
@@ -19,5 +21,9 @@ namespace Application.Models
         // Navigation property
         // This property will allow us to navigate to other side of the relationship
         public Stock? Stock { get; set; }
+
+        // Define a one to one relationship between the AppUser and Comment
+        public string AppUserId { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }
