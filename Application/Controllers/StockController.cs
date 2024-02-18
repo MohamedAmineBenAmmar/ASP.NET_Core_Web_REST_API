@@ -7,6 +7,7 @@ using Application.DTOs.Stock;
 using Application.Helpers;
 using Application.Interfaces;
 using Application.Mappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +27,7 @@ namespace Application.Controllers
 
         // The creation of our endpoints
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
             if (!ModelState.IsValid)
