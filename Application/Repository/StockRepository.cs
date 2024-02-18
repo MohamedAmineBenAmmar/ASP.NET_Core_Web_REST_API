@@ -78,6 +78,10 @@ namespace Application.Repository
             return await stocks.ToListAsync();
         }
 
+        public async Task<Stock?> GetBySymbolAsync(string symbol)
+        {
+            return await _dbContext.Stock.FirstOrDefaultAsync(s => s.Symbol == symbol);
+        }
 
         public async Task<Stock?> GetStockByIdAsync(int id)
         {
